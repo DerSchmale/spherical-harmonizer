@@ -1,0 +1,40 @@
+{
+  "name": "@derschmale/spherical-harmonizer",
+  "version": "0.1.0",
+  "main": "build/sh.js",
+  "module": "build/sh.module.js",
+  "types": "build/types/main.d.ts",
+  "files": [
+    "build/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DerSchmale/spherical-harmonizer.git"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "docs": "typedoc --out ./docs/ ./src/ --mode file"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.2.0",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1",
+    "rollup": "^2.35.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.29.0",
+    "typedoc": "^0.19.2",
+    "typescript": "^4.1.3"
+  },
+  "keywords": [
+    "spherical harmonics",
+    "3d",
+    "irradiance",
+    "hdr",
+    "hdri"
+  ]
+}

@@ -1,0 +1,165 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@derschmale/spherical-harmonizer</title>
+	<meta name="description" content="Documentation for @derschmale/spherical-harmonizer">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@derschmale/spherical-harmonizer</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@derschmale/spherical-harmonizer</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#spherical-harmonizer" id="spherical-harmonizer" style="color: inherit; text-decoration: none;">
+					<h1>Spherical Harmonizer</h1>
+				</a>
+				<p>A Typescript library to generate L2 spherical harmonics.</p>
+				<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+					<h2>Example</h2>
+				</a>
+				<p><a href="http://derschmale.github.io/spherical-harmonizer/example">Web interface</a></p>
+				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+					<h2>Documentation</h2>
+				</a>
+				<p><a href="http://derschmale.github.io/spherical-harmonizer/docs">Code reference</a></p>
+				<p>There&#39;s only one relevant method to be called:</p>
+				<p><code>generateSH(data, width, height, onComplete, onProgress, options)</code></p>
+				<ul>
+					<li><code>data</code>: A <code>Float32Array</code> with packed RGB data or a <code>Uint8ClampedArray</code> containing packed RGBA
+					data, containing the panorama image.</li>
+					<li><code>width</code>: The width of the image contained in <code>data</code>.</li>
+					<li><code>height</code>: The height of the image contained in <code>data</code>.</li>
+					<li><code>onComplete</code>: A function called when the generation is complete. An array of <code>RGB</code> values will be
+					passed, one for each SH coefficient.</li>
+					<li><code>onProgress</code> (optional): Called with a value from 0 - 1.</li>
+					<li><code>options</code> (optional): An object containing options for generations (irradiance).</li>
+				</ul>
+				<p>Here&#39;s an example:</p>
+				<pre><code><span class="hljs-keyword">import</span> { decodeRGBE } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@derschmale/io-rgbe&quot;</span>;
+<span class="hljs-keyword">import</span> { generateSH } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@derschmale/spherical-harmonizer&quot;</span>; 
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">convert</span>(<span class="hljs-params">arrayBuffer</span>) </span>{
+    <span class="hljs-keyword">const</span> hdr = decodeRGBE(<span class="hljs-keyword">new</span> <span class="hljs-built_in">DataView</span>(arrayBuffer));
+    generateSH(hdr.data, hdr.width, hdr.height, onComplete);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onComplete</span>(<span class="hljs-params">sh</span>)
+</span>{
+    <span class="hljs-comment">// do something with sh coefficients</span>
+}
+
+<span class="hljs-keyword">const</span> request = <span class="hljs-keyword">new</span> XMLHttpRequest();
+request.open(<span class="hljs-string">&quot;GET&quot;</span>, <span class="hljs-string">&quot;/panorama.hdr&quot;</span>, <span class="hljs-literal">true</span>);
+request.responseType = <span class="hljs-string">&quot;arraybuffer&quot;</span>;
+request.onload = <span class="hljs-function"><span class="hljs-params">_</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> arrayBuffer = request.response; <span class="hljs-comment">// Note: not oReq.responseText</span>
+    <span class="hljs-keyword">if</span> (arrayBuffer)
+        convert(arrayBuffer);
+};
+
+request.send(<span class="hljs-literal">null</span>);
+
+
+
+</code></pre>
+				<a href="#building" id="building" style="color: inherit; text-decoration: none;">
+					<h2>Building</h2>
+				</a>
+				<p>Building the code is simples:</p>
+				<pre><code><span class="hljs-built_in">npm</span> install
+<span class="hljs-built_in">npm</span> run build</code></pre>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#rgb" class="tsd-kind-icon">RGB</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#shoptions" class="tsd-kind-icon">SHOptions</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#generatesh" class="tsd-kind-icon">generateSH</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

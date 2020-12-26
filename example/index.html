@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytical Spherical Harmonics generator</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script defer src="es-module-shims.js"></script>
+    <script type="importmap-shim">
+        {
+            "imports": {
+                "@derschmale/io-rgbe": "https://derschmale.github.io/io-rgbe/build/io-rgbe.module.js",
+                "@derschmale/spherical-harmonizer": "../build/sh.module.js"
+            }
+        }
+    </script>
+    <script src="script.js" type="module-shim"></script>
+</head>
+<body id="rootBody">
+<div id="startContainer" class="vAlignContainer">
+    <div class="vAligned">
+        <p>Drop a .hdr file to convert it to SH...</p>
+    </div>
+</div>
+
+<div id="progress" class="vAlignContainer hidden">
+    <div id="progressBar" class="vAligned">
+        <div id="progressText">Calculating...</div>
+        <div class="progressBorder">
+            <div id="progressProgress" class="progressProgress">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="errorContainer" class="vAlignContainer hidden">
+    <div class="vAligned">
+        <h1>Sorry!</h1>
+        <p id="errorMessage"></p>
+    </div>
+</div>
+
+<div class="header">
+    <h1>Spherical Harmonizer</h1>
+    <p>
+        Made by <a href="http://www.derschmale.com">David Lenaerts</a>
+    </p>
+    <p>Options:<br/><p>
+    <p><input type="checkbox" checked="true" id="irradianceCheck"> Convert to irradiance.</p>
+</div>
+</body>
+</html>
