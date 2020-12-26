@@ -1,11 +1,46 @@
 var SH = (function (exports) {
 	'use strict';
 
+	/**
+	 * Encodes the sh harmonics as an .ASH file (as used by Knald Lys and Helix3D).
+	 */
+	function encodeASH(sh) {
+	    var str = "# Generated with @derschmale/spherical-harmonizer\n";
+	    var n = 0;
+	    for (var l = 0; l < 3; ++l) {
+	        str += "\nl=" + l + ":\n";
+	        for (var m = -l; m <= l; ++m) {
+	            str += "m=" + m + ": ";
+	            str += sh[n].r + " " + sh[n].g + " " + sh[n].b + "\n";
+	            ++n;
+	        }
+	    }
+	    return str;
+	}
+
+	/**
+	 * @ignore
+	 */
 	var l0 = 0.5 * Math.sqrt(1.0 / Math.PI);
+	/**
+	 * @ignore
+	 */
 	var l1 = 0.5 * Math.sqrt(3.0 / Math.PI);
+	/**
+	 * @ignore
+	 */
 	var l2_1 = 0.5 * Math.sqrt(15.0 / Math.PI);
+	/**
+	 * @ignore
+	 */
 	var l2_2 = 0.25 * Math.sqrt(5.0 / Math.PI);
+	/**
+	 * @ignore
+	 */
 	var l2_3 = 0.25 * Math.sqrt(15.0 / Math.PI);
+	/**
+	 * @ignore
+	 */
 	var irrConstants = [
 	    Math.PI,
 	    Math.PI * 2 / 3,
@@ -17,6 +52,9 @@ var SH = (function (exports) {
 	    Math.PI / 4,
 	    Math.PI / 4
 	];
+	/**
+	 * @ignore
+	 */
 	var shConstants = [
 	    l0,
 	    l1,
@@ -28,6 +66,10 @@ var SH = (function (exports) {
 	    l2_1,
 	    l2_3
 	];
+	/**
+	 * Converts regular image data to floating point data.
+	 * @ignore
+	 */
 	function convertToFloats(data) {
 	    var len = data.length;
 	    var f32 = new Float32Array(len / 4 * 3);
@@ -38,7 +80,19 @@ var SH = (function (exports) {
 	    }
 	    return f32;
 	}
+	/**
+	 * Converts HDRI (equirectangular / panorama) image to its SH representation.
+	 * @param hdrImageData The Float32Array (for hdr) or Uint8ClampedArray (for ldr) image data as a
+	 * flat list. Float32Arrays should only contains packed RGB data, while Uint8ClampedArray are RGBA.
+	 *
+	 * @param width The width of the image.
+	 * @param height The height of the image.
+	 * @param onComplete A function that's called when processing is complete.
+	 * @param onProgress An optional function that's called when processing updates.
+	 * @param options An optional SHOptions object.
+	 */
 	function generateSH(hdrImageData, width, height, onComplete, onProgress, options) {
+	    // TODO: Implement as a worker instead of using green threading
 	    options = options || {};
 	    if (options.irradiance === undefined)
 	        options.irradiance = true;
@@ -48,6 +102,9 @@ var SH = (function (exports) {
 	        sh[i] = { r: 0, g: 0, b: 0 };
 	    doPart(sh, f32data, width, height, onComplete, onProgress, options, 0, 0);
 	}
+	/**
+	 * @ignore
+	 */
 	function doPart(sh, data, width, height, onComplete, onProgress, options, index, totalWeight) {
 	    var numSamples = width * height;
 	    for (var i = 0; i < 10000; ++i) {
@@ -61,7 +118,13 @@ var SH = (function (exports) {
 	        onProgress(index / numSamples);
 	    setTimeout(doPart, 0, sh, data, width, height, onComplete, onProgress, options, index, totalWeight);
 	}
+	/**
+	 * @ignore
+	 */
 	var tmp = new Float32Array(9);
+	/**
+	 * @ignore
+	 */
 	function accumulate(sh, index, data, width, height) {
 	    var x = index % width;
 	    var y = Math.floor(index / width);
@@ -93,6 +156,9 @@ var SH = (function (exports) {
 	    }
 	    return w;
 	}
+	/**
+	 * @ignore
+	 */
 	function finish(sh, totalWeight, onComplete, onProgress, options) {
 	    for (var i = 0; i < 9; ++i) {
 	        var sc = options.irradiance ? irrConstants[i] : 1.0;
@@ -107,6 +173,7 @@ var SH = (function (exports) {
 	        onComplete(sh);
 	}
 
+	exports.encodeASH = encodeASH;
 	exports.generateSH = generateSH;
 
 	Object.defineProperty(exports, '__esModule', { value: true });

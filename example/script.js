@@ -1,5 +1,5 @@
 import {decodeRGBE} from "@derschmale/io-rgbe";
-import {generateSH} from "@derschmale/spherical-harmonizer";
+import {generateSH, encodeASH} from "@derschmale/spherical-harmonizer";
 
 document.body.addEventListener("drop", onDrop);
 document.body.addEventListener("dragover", onDragOver);
@@ -98,19 +98,7 @@ function onProgress(ratio)
 
 function saveToAsh(sh, name)
 {
-    let str = "# Generated with Helix\n";
-
-    let n = 0;
-    for (let l = 0; l < 3; ++l) {
-        str += "\nl=" + l + ":\n";
-        for (let m = -l; m <= l; ++m) {
-            str += "m=" + m + ": ";
-            str += sh[n].r + " " + sh[n].g + " " + sh[n].b + "\n";
-            ++n;
-        }
-    }
-
-    download(str, name);
+    download(encodeASH(sh), name);
 }
 
 function download(ashContents, name)
