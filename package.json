@@ -1,6 +1,6 @@
 {
   "name": "@derschmale/spherical-harmonizer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "build/sh.js",
   "module": "build/sh.module.js",
   "types": "build/types/main.d.ts",
